@@ -1,5 +1,41 @@
+#ifdef ARDUINO
 #include <Arduino.h>
 #include <Wire.h>
+#endif
+
+#if !defined(ARDUINO)
+#include <cstdint>
+#include <cstdio>
+
+using byte = uint8_t;
+const int HEX = 16;
+
+class HardwareSerial {
+public:
+  void begin(int) {}
+  bool operator!() const { return false; }
+  void println(const char* s) { std::puts(s); }
+  void print(const char* s) { std::fputs(s, stdout); }
+  void print(unsigned int value, int base) {
+    if (base == HEX)
+      std::printf("%X", value);
+    else
+      std::printf("%u", value);
+  }
+};
+
+class TwoWire {
+public:
+  void begin(int, int) {}
+  void beginTransmission(uint8_t) {}
+  uint8_t endTransmission() { return 0; }
+};
+
+HardwareSerial Serial;
+TwoWire Wire;
+
+inline void delay(unsigned long) {}
+#endif
 
 void setup() {
   // Use Keyestudio ESP32 Plus hardware I2C pins
