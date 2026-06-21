@@ -10,7 +10,7 @@ bool lastButtonState = HIGH;
 int currentAngle = 0;
 
 // Smaller delay = faster movement
-const int STEP_DELAY_MS = 5;
+const int STEP_DELAY_MS = 2;
 const int STEP_SIZE = 1;
 
 void smoothMove(int targetAngle) {
