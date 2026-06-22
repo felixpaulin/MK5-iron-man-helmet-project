@@ -6,13 +6,13 @@ const int SERVO_PIN = 18;
 
 Servo right_cheek;
 
-bool servoAt10 = false;
+bool servoAt20 = false;
 bool lastButtonState = HIGH;
 
 void setup() {
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   right_cheek.attach(SERVO_PIN);
-  right_cheek.write(120);
+  right_cheek.write(110);
   delay(500);
 }
 
@@ -22,8 +22,8 @@ void loop() {
   if (buttonState == LOW && lastButtonState == HIGH) {
     delay(20);
     if (digitalRead(BUTTON_PIN) == LOW) {
-      servoAt10 = !servoAt10;
-      right_cheek.write(servoAt10 ? 10 : 120);
+      servoAt20 = !servoAt20;
+      right_cheek.write(servoAt20 ? 20 : 110);
     }
   }
 
