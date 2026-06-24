@@ -25,7 +25,7 @@ const int leftCheekClosed = 50;      // closed angle for left cheek servo
 const int leftCheekOpen = 117;       // open angle for left cheek servo
 const int middleTopClosed = 150;     // closed angle for middle top servo
 const int middleTopOpen = 30;        // open angle for middle top servo
-const int bottomServoClosed = 130;   // closed angle for bottom servo
+const int bottomServoClosed = 133;   // closed angle for bottom servo
 const int bottomServoOpen = 40;      // open angle for bottom servo
 
 int rightCheekAngle = rightCheekClosed;  // current right cheek angle state
