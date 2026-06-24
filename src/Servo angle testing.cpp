@@ -1,128 +1,95 @@
-#include <ESP32Servo.h> // ESP32-compatible servo control library
-#include <Arduino.h>     // Arduino core functions and constants
+#include <ESP32Servo.h>
+#include <Arduino.h>
 
-const int buttonPin = 12;            // pin for the button input
-const int rightCheekPin = 18;        // pin for the right cheek servo
-const int leftCheekPin = 19;         // pin for the left cheek servo
-const int middleTopPin = 23;         // pin for the middle top servo
-const int bottomServoPin = 26;       // pin for the bottom servo
+const int BUTTON_PIN = 12;
+const int RIGHT_CHEEK_PIN = 18;
+const int LEFT_CHEEK_PIN = 19;
+const int MIDDLE_TOP_PIN = 23;
+const int BOTTOM_SERVO_PIN = 26;
 
-Servo rightCheek;                    // servo object for right cheek
-Servo leftCheek;                     // servo object for left cheek
-Servo middleTop;                     // servo object for middle top
-Servo bottomServo;                   // servo object for the bottom servo
+Servo right_cheek;
+Servo left_cheek;
+Servo middle_top;
+Servo bottom_servo;
 
-bool isOpenPosition = false;         // tracks whether the helmet is currently open
-bool lastButtonState = HIGH;         // remembers the last button state for debounce
+bool servoAt50 = false;
+bool lastButtonState = HIGH;
 
-const int stepDelayMs = 1;          // delay between each incremental servo step
-const int middleTopDelayMs = 300;    // delay after cheeks before moving middle top
-const int bottomDelayMs = 300;       // delay after middle top before moving bottom servo
+const int STEP_DELAY_MS = 10;
+const int MIDDLE_TOP_DELAY_MS = 300;
+const int BOTTOM_DELAY_MS = 300;
 
-const int rightCheekClosed = 117;    // closed angle for right cheek servo
-const int rightCheekOpen = 50;       // open angle for right cheek servo
-const int leftCheekClosed = 50;      // closed angle for left cheek servo
-const int leftCheekOpen = 117;       // open angle for left cheek servo
-const int middleTopClosed = 150;     // closed angle for middle top servo
-const int middleTopOpen = 30;        // open angle for middle top servo
-const int bottomServoClosed = 40;   // closed angle for bottom servo
-const int bottomServoOpen = 135;      // open angle for bottom servo
+// Raw per-servo values so you can manually control each side.
+const int RIGHT_CHEEK_CLOSED = 117;
+const int RIGHT_CHEEK_OPEN = 50;
+const int LEFT_CHEEK_CLOSED = 50;
+const int LEFT_CHEEK_OPEN = 117;
+const int MIDDLE_TOP_CLOSED = 150;
+const int MIDDLE_TOP_OPEN = 30;
+const int BOTTOM_SERVO_CLOSED = 40;
+const int BOTTOM_SERVO_OPEN = 130;
 
-int rightCheekAngle = rightCheekClosed;  // current right cheek angle state
-int leftCheekAngle = leftCheekClosed;    // current left cheek angle state
-int middleTopAngle = middleTopClosed;    // current middle top angle state
-int bottomServoAngle = bottomServoClosed; // current bottom servo angle state
+void moveBothServosTo(int rightAngle, int leftAngle) {
+  right_cheek.attach(RIGHT_CHEEK_PIN);
+  left_cheek.attach(LEFT_CHEEK_PIN);
 
-void moveServoTo(Servo &servo, int &currentAngle, int targetAngle, int pin) {
-  servo.attach(pin);                    // attach the servo to its pin so it can receive PWM
-
-  while (currentAngle != targetAngle) { // move one degree at a time until we reach the target
-    if (currentAngle < targetAngle) {   // if we need to increase the angle
-      currentAngle++;
-    } else {                            // if we need to decrease the angle
-      currentAngle--;
-    }
-
-    servo.write(currentAngle);         // command the servo to the next step angle
-    delay(stepDelayMs);                // wait so the servo moves more slowly and smoothly
+  for (int i = 0; i <= 10; i++) {
+    right_cheek.write(rightAngle);
+    left_cheek.write(leftAngle);
+    delay(STEP_DELAY_MS);
   }
 
-  servo.detach();                      // detach the servo to reduce buzzing once movement is complete
+  right_cheek.detach();
+  left_cheek.detach();
 }
 
-void moveBothServosTo(int rightTarget, int leftTarget) {
-  rightCheek.attach(rightCheekPin);    // attach both cheek servos before moving them together
-  leftCheek.attach(leftCheekPin);
-
-  while (rightCheekAngle != rightTarget || leftCheekAngle != leftTarget) {
-    if (rightCheekAngle < rightTarget) { // move right cheek toward its target
-      rightCheekAngle++;
-    } else if (rightCheekAngle > rightTarget) {
-      rightCheekAngle--;
-    }
-
-    if (leftCheekAngle < leftTarget) {   // move left cheek toward its target
-      leftCheekAngle++;
-    } else if (leftCheekAngle > leftTarget) {
-      leftCheekAngle--;
-    }
-
-    rightCheek.write(rightCheekAngle);  // write the current right cheek angle
-    leftCheek.write(leftCheekAngle);    // write the current left cheek angle
-    delay(stepDelayMs);                 // delay between each step for smooth motion
-  }
-
-  rightCheek.detach();                 // detach the right cheek servo when done
-  leftCheek.detach();                  // detach the left cheek servo when done
+void moveMiddleTopTo(int angle) {
+  middle_top.attach(MIDDLE_TOP_PIN);
+  middle_top.write(angle);
+  delay(250);
+  middle_top.detach();
 }
 
-void moveMiddleTopTo(int targetAngle) {
-  moveServoTo(middleTop, middleTopAngle, targetAngle, middleTopPin); // move middle top servo with smooth steps
-}
-
-void moveBottomServoTo(int targetAngle) {
-  moveServoTo(bottomServo, bottomServoAngle, targetAngle, bottomServoPin); // move bottom servo with smooth steps
+void moveBottomServoTo(int angle) {
+  bottom_servo.attach(BOTTOM_SERVO_PIN);
+  bottom_servo.write(angle);
+  delay(250);
+  bottom_servo.detach();
 }
 
 void setup() {
-  pinMode(buttonPin, INPUT_PULLUP);     // set button pin as input with internal pull-up resistor
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
 
-  rightCheek.attach(rightCheekPin);    // initialize right cheek in closed position
-  leftCheek.attach(leftCheekPin);
-  rightCheek.write(rightCheekAngle);
-  leftCheek.write(leftCheekAngle);
-  delay(250);                          // allow initial position to settle
-  rightCheek.detach();
-  leftCheek.detach();
-
-  moveMiddleTopTo(middleTopClosed);    // initialize middle top in closed position smoothly
-  moveBottomServoTo(bottomServoClosed); // initialize bottom servo in closed position smoothly
-  delay(500);                          // wait after the initial setup is complete
+  // Start by moving once to the closed positions, then detach
+  moveBothServosTo(RIGHT_CHEEK_CLOSED, LEFT_CHEEK_CLOSED);
+  moveMiddleTopTo(MIDDLE_TOP_CLOSED);
+  moveBottomServoTo(BOTTOM_SERVO_CLOSED);
+  delay(500);
 }
 
 void loop() {
-  bool buttonState = digitalRead(buttonPin); // read the current button state
+  bool buttonState = digitalRead(BUTTON_PIN);
 
-  if (buttonState == LOW && lastButtonState == HIGH) { // detect button press edge
-    delay(20);                         // debounce delay to avoid false triggers
-    if (digitalRead(buttonPin) == LOW) { // confirm button is still pressed
-      isOpenPosition = !isOpenPosition; // toggle the open/closed state
+  if (buttonState == LOW && lastButtonState == HIGH) {
+    delay(20);
+    if (digitalRead(BUTTON_PIN) == LOW) {
+      servoAt50 = !servoAt50;
 
-      if (isOpenPosition) {
-        moveBothServosTo(rightCheekOpen, leftCheekOpen); // move both cheek servos together first
-        delay(middleTopDelayMs);                         // wait before moving the middle top servo
-        moveMiddleTopTo(middleTopOpen);                  // move middle top to open angle
-        delay(bottomDelayMs);                            // wait before moving the bottom servo
-        moveBottomServoTo(bottomServoOpen);              // move the bottom servo last
+      if (servoAt50) {
+        moveBothServosTo(RIGHT_CHEEK_OPEN, LEFT_CHEEK_OPEN);
+        delay(MIDDLE_TOP_DELAY_MS);
+        moveMiddleTopTo(MIDDLE_TOP_OPEN);
+        delay(BOTTOM_DELAY_MS);
+        moveBottomServoTo(BOTTOM_SERVO_OPEN);
       } else {
-        moveBottomServoTo(bottomServoClosed);            // move the bottom servo first when closing
-        delay(bottomDelayMs);                            // wait before moving the middle top servo
-        moveMiddleTopTo(middleTopClosed);                // move the middle top to closed angle
-        delay(middleTopDelayMs);                         // wait before moving the cheeks
-        moveBothServosTo(rightCheekClosed, leftCheekClosed); // close both cheek servos together
+        moveBottomServoTo(BOTTOM_SERVO_CLOSED);
+        delay(BOTTOM_DELAY_MS);
+        moveMiddleTopTo(MIDDLE_TOP_CLOSED);
+        delay(MIDDLE_TOP_DELAY_MS);
+        moveBothServosTo(RIGHT_CHEEK_CLOSED, LEFT_CHEEK_CLOSED);
       }
     }
   }
 
-  lastButtonState = buttonState;      // save the current button state for the next loop iteration
+  lastButtonState = buttonState;
 }
