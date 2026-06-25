@@ -111,26 +111,6 @@ void moveBottomServoTo(int angle) {
   bottomServo.detach();
 }
 
-void runServoSequence() {
-  if (servoAt50) {
-    moveBothServosTo(rightCheekOpen, leftCheekOpen);
-    delay(middleTopDelayMs);
-    moveMiddleTopTo(middleTopOpen);
-    delay(bottomDelayMs);
-    moveBottomServoTo(bottomServoOpen);
-    delay(topDelayMs);
-    moveTopServosTo(rightTopOpen, leftTopOpen);
-  } else {
-    moveTopServosTo(rightTopClosed, leftTopClosed);
-    delay(topDelayMs);
-    moveBottomServoTo(bottomServoClosed);
-    delay(bottomDelayMs);
-    moveMiddleTopTo(middleTopClosed);
-    delay(middleTopDelayMs);
-    moveBothServosTo(rightCheekClosed, leftCheekClosed);
-  }
-}
-
 void setup() {
   pinMode(buttonPin, INPUT_PULLUP);
 
@@ -149,7 +129,23 @@ void loop() {
     delay(20);
     if (digitalRead(buttonPin) == LOW) {
       servoAt50 = !servoAt50;
-      runServoSequence();
+if (servoAt50) {
+    moveBothServosTo(rightCheekOpen, leftCheekOpen);
+    delay(middleTopDelayMs);
+    moveMiddleTopTo(middleTopOpen);
+    delay(bottomDelayMs);
+    moveBottomServoTo(bottomServoOpen);
+    delay(topDelayMs);
+    moveTopServosTo(rightTopOpen, leftTopOpen);
+  } else {
+    moveTopServosTo(rightTopClosed, leftTopClosed);
+    delay(topDelayMs);
+    moveBottomServoTo(bottomServoClosed);
+    delay(bottomDelayMs);
+    moveMiddleTopTo(middleTopClosed);
+    delay(middleTopDelayMs);
+    moveBothServosTo(rightCheekClosed, leftCheekClosed);
+  }
     }
   }
 
