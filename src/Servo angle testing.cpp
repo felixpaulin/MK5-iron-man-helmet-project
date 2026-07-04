@@ -111,13 +111,15 @@ void moveMiddleTopTo(int angle) {
 void moveBottomServoTo(int angle) {
   bottomServo.attach(bottomServoPin);
 
+  bottomServo.write(bottomServoAngle);
+
   delay(100);
 
   while (bottomServoAngle != angle) {
     if (bottomServoAngle < angle) {
-      bottomServoAngle += 2;
+      bottomServoAngle ++;
     } else if (bottomServoAngle > angle) {
-      bottomServoAngle -= 2;
+      bottomServoAngle --;
     }
 
 
