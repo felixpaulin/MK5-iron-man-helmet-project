@@ -17,7 +17,7 @@ Servo bottomServo;
 Servo leftTop;
 Servo rightTop;
 
-bool servoAt50 = false;
+bool helmetOpen = false;
 bool topOpen = false;
 bool lastSectionalState = HIGH;
 bool lastIntegralState = HIGH;
@@ -112,7 +112,7 @@ void setup() {
 }
 
 void sectionalOpen() {
-  if (servoAt50) {
+  if (helmetOpen) {
     moveBothServosTo(rightCheekOpen, leftCheekOpen);
     delay(middleTopDelayMs);
     moveMiddleTopTo(middleTopOpen);
@@ -148,7 +148,7 @@ void loop() {
   if (sectionalState == LOW && lastSectionalState == HIGH) {
     delay(20);
     if (digitalRead(sectionalPin) == LOW) {
-      servoAt50 = !servoAt50;
+      helmetOpen = !helmetOpen;
       sectionalOpen();
     }
   }
