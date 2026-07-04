@@ -128,13 +128,6 @@ void moveBottomServoTo(int angle) {
 void setup() {
   pinMode(sectionalPin, INPUT_PULLUP);
   pinMode(integralPin, INPUT_PULLUP);
-
-  // Start by moving once to the closed positions, then detach
-  moveCheekServosTo(rightCheekClosed, leftCheekClosed);
-  moveMiddleTopTo(middleTopClosed);
-  moveBottomServoTo(bottomServoClosed);
-  moveTopServosTo(rightTopClosed, leftTopClosed);
-  delay(500);
 }
 
 void sectionalOpen() {
