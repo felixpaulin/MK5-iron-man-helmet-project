@@ -35,7 +35,7 @@ const int leftCheekOpen = 117;
 const int middleTopClosed = 150;
 const int middleTopOpen = 30;
 const int bottomServoClosed = 38;
-const int bottomServoOpen = 130;
+const int bottomServoOpen = 128;
 const int leftTopClosed = 20;
 const int leftTopOpen = 180;
 const int rightTopClosed = 20;
@@ -110,16 +110,19 @@ void moveMiddleTopTo(int angle) {
 
 void moveBottomServoTo(int angle) {
   bottomServo.attach(bottomServoPin);
+
+  delay(100);
+
   while (bottomServoAngle != angle) {
     if (bottomServoAngle < angle) {
-      bottomServoAngle++;
+      bottomServoAngle += 2;
     } else if (bottomServoAngle > angle) {
-      bottomServoAngle--;
+      bottomServoAngle -= 2;
     }
 
 
     bottomServo.write(bottomServoAngle);
-    delay(smoothTurnMs);
+    delay(10);
   }
   delay(250);
   bottomServo.detach();
@@ -141,7 +144,7 @@ void sectionalOpen() {
     moveTopServosTo(rightTopOpen, leftTopOpen);
   } else {
     moveTopServosTo(rightTopClosed, leftTopClosed);
-    delay(topDelayMs);
+    delay(150);
     moveBottomServoTo(bottomServoClosed);
     delay(bottomDelayMs);
     moveMiddleTopTo(middleTopClosed);
