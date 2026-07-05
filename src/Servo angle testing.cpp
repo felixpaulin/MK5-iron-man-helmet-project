@@ -1,8 +1,13 @@
 #include <ESP32Servo.h>
 #include <Arduino.h>
 
-const int sectionalPin = 13;
-const int integralPin = 16;
+// Note: you can also use INPUT_PULLUP buttons instead of capitive touch sensors, which is what id id for testing before switching to the helemts touch sensors.
+
+const int sectionalPin = 13; // pin for secitonal opening touch pad
+const int integralPin = 16; // pin for integral opening touch pad
+
+// pins for all the servos. rightTop and leftTop are the two top piece servos
+// bottomServo is the servo for the bottom part and same situation with middleTop and cheek servos
 const int rightCheekPin = 18;
 const int leftCheekPin = 19;
 const int middleTopPin = 23;
@@ -10,6 +15,7 @@ const int bottomServoPin = 26;
 const int leftTopPin = 17;
 const int rightTopPin = 25;
 
+// servo names
 Servo rightCheek;
 Servo leftCheek;
 Servo middleTop;
@@ -17,17 +23,19 @@ Servo bottomServo;
 Servo leftTop;
 Servo rightTop;
 
+// define states
 bool helmetOpen = false;
 bool topOpen = false;
 bool lastSectionalState = HIGH;
 bool lastIntegralState = HIGH;
 
+// smooth turn for servo speed and delay for time inbtween different servos moving
 const int smoothTurnMs = 2;
 const int middleTopDelayMs = 200;
 const int bottomDelayMs = 200;
 const int topDelayMs = 200;
 
-// Raw per-servo values so you can manually control each side.
+// Raw per-servo values so you can manually control each servo.
 const int rightCheekClosed = 117;
 const int rightCheekOpen = 50;
 const int leftCheekClosed = 50;
@@ -41,6 +49,7 @@ const int leftTopOpen = 180;
 const int rightTopClosed = 20;
 const int rightTopOpen = 180;
 
+// define angle names for in code
 int leftTopAngle = leftTopClosed;
 int rightTopAngle = rightTopClosed;
 int leftCheekAngle = leftCheekClosed;
@@ -48,6 +57,7 @@ int rightCheekAngle = rightCheekClosed;
 int bottomServoAngle = bottomServoClosed;
 int middleTopAngle = middleTopClosed;
 
+// below are the functions for moving each servo/servo pair this one is for the cheek servos
 void moveCheekServosTo(int rightAngle, int leftAngle) {
   rightCheek.attach(rightCheekPin);
   leftCheek.attach(leftCheekPin);
@@ -75,6 +85,7 @@ void moveCheekServosTo(int rightAngle, int leftAngle) {
   leftCheek.detach();
 }
 
+// this is for the two top assembly servos
 void moveTopServosTo(int rightAngle, int leftAngle) {
   rightTop.attach(rightTopPin);
   leftTop.attach(leftTopPin);
@@ -102,6 +113,7 @@ void moveTopServosTo(int rightAngle, int leftAngle) {
   leftTop.detach();
 }
 
+// this is for the middle top piece servo
 void moveMiddleTopTo(int angle) {
   middleTop.attach(middleTopPin);
 
@@ -124,6 +136,7 @@ void moveMiddleTopTo(int angle) {
   middleTop.detach();
 }
 
+// this is for the bottom assembly servo
 void moveBottomServoTo(int angle) {
   bottomServo.attach(bottomServoPin);
 
@@ -140,14 +153,16 @@ void moveBottomServoTo(int angle) {
   }
   delay(150);
 
-  //bottomServo.detach();
 }
 
+// setup for the touch pads
 void setup() {
   pinMode(sectionalPin, INPUT_PULLUP);
   pinMode(integralPin, INPUT_PULLUP);
 }
 
+// function for opening the helemt in sections.
+// It calls the movement functions one after the other to move the servo, uses helmetOpen boolean to check if it should basically open or close the helmet.
 void sectionalOpen() {
   if (helmetOpen) {
     moveCheekServosTo(rightCheekOpen, leftCheekOpen);
@@ -169,6 +184,7 @@ void sectionalOpen() {
   }
 }
 
+// function for opening the helemt integrally, so as one piece
 void integralOpen() {
   if (topOpen) {
     moveTopServosTo(rightTopClosed, leftTopClosed);
@@ -179,6 +195,7 @@ void integralOpen() {
   }
 }
 
+// a loop that actually calls the functions if a touch pad is touched in order to open or close the helemt in the two different ways.
 void loop() {
   bool sectionalState = digitalRead(sectionalPin);
   bool integralState = digitalRead(integralPin);
