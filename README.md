@@ -4,6 +4,10 @@ Custom ESP32-based controller replacement and AI upgrade project for the AutoKin
 
 ---
 
+Note: Current code with the actual code and likely any future updates for eyes, tinyML and LLM integration will be added in this script. It is stored in the src folder for platformIO.
+
+---
+
 # Project Overview
 
 This repository contains the code, experiments and future plans for replacing the original controller board inside an AutoKing MK5 helmet with a custom ESP32-based control system.
