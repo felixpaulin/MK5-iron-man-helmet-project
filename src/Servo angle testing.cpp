@@ -136,6 +136,43 @@ void moveMiddleTopTo(int angle) {
   middleTop.detach();
 }
 
+// move cheek servos and middle top in sync, while keeping separate control of middle top speed
+void moveCheeksAndMiddleTopTo(int rightAngle, int leftAngle, int middleAngle) {
+  rightCheek.attach(rightCheekPin);
+  leftCheek.attach(leftCheekPin);
+  middleTop.attach(middleTopPin);
+
+  while (rightCheekAngle != rightAngle || leftCheekAngle != leftAngle || middleTopAngle != middleAngle) {
+    if (rightCheekAngle < rightAngle) {
+      rightCheekAngle++;
+    } else if (rightCheekAngle > rightAngle) {
+      rightCheekAngle--;
+    }
+
+    if (leftCheekAngle < leftAngle) {
+      leftCheekAngle++;
+    } else if (leftCheekAngle > leftAngle) {
+      leftCheekAngle--;
+    }
+
+    if (middleTopAngle < middleAngle) {
+      middleTopAngle++;
+    } else if (middleTopAngle > middleAngle) {
+      middleTopAngle--;
+    }
+
+    rightCheek.write(rightCheekAngle);
+    leftCheek.write(leftCheekAngle);
+    middleTop.write(middleTopAngle);
+    delay(smoothTurnMs);
+  }
+
+  delay(150);
+  rightCheek.detach();
+  leftCheek.detach();
+  middleTop.detach();
+}
+
 // this is for the bottom assembly servo
 void moveBottomServoTo(int angle) {
   bottomServo.attach(bottomServoPin);
@@ -161,13 +198,11 @@ void setup() {
   pinMode(integralPin, INPUT_PULLUP);
 }
 
-// function for opening the helemt in sections.
-// It calls the movement functions one after the other to move the servo, uses helmetOpen boolean to check if it should basically open or close the helmet.
+// function for opening the helmet in sections.
+// It moves the cheek servos and the middle top servo in sync, while keeping those motions in separate helper functions.
 void sectionalOpen() {
   if (helmetOpen) {
-    moveCheekServosTo(rightCheekOpen, leftCheekOpen);
-    delay(middleTopDelayMs);
-    moveMiddleTopTo(middleTopOpen);
+    moveCheeksAndMiddleTopTo(rightCheekOpen, leftCheekOpen, middleTopOpen);
     delay(bottomDelayMs);
     moveBottomServoTo(bottomServoOpen);
     delay(topDelayMs);
@@ -178,9 +213,7 @@ void sectionalOpen() {
     moveBottomServoTo(bottomServoClosed);
     bottomServo.detach();
     delay(bottomDelayMs);
-    moveMiddleTopTo(middleTopClosed);
-    delay(middleTopDelayMs);
-    moveCheekServosTo(rightCheekClosed, leftCheekClosed);
+    moveCheeksAndMiddleTopTo(rightCheekClosed, leftCheekClosed, middleTopClosed);
   }
 }
 
