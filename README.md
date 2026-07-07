@@ -1,3 +1,17 @@
+
+## Attribution Request
+
+If this project contributes significantly to your work, products, videos, repositories, or other public projects, attribution is greatly appreciated.
+
+Suggested attribution:
+
+"Based on the MK5 Helmet Controller Project by Felix Paulin"
+
+GitHub Repository Link:
+https://github.com/felixpaulin/Iron-man-helmet-project
+
+---
+
 # MK5 Helmet Controller Project
 
 Custom ESP32-based controller replacement and AI upgrade project for the AutoKing MK5 Iron Man Helmet.
@@ -286,15 +300,4 @@ JARVIS                  ⏳
 
 Built because Tony Stark probably would have done the same thing.
 
----
 
-## Attribution Request
-
-If this project contributes significantly to your work, products, videos, repositories, or other public projects, attribution is greatly appreciated.
-
-Suggested attribution:
-
-"Based on the MK5 Helmet Controller Project by Felix Paulin"
-
-GitHub Repository Link:
-https://github.com/felixpaulin/Iron-man-helmet-project
