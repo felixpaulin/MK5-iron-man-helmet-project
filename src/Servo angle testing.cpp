@@ -1,7 +1,7 @@
 #include <ESP32Servo.h>
 #include <Arduino.h>
 
-// Note: you can also use INPUT_PULLUP buttons instead of capitive touch sensors, which is what id id for testing before switching to the helemts touch sensors.
+// Note: you can also use INPUT_PULLUP buttons instead of capitive touch sensors, which is what I did for testing before switching to the helemts touch sensors.
 
 const int sectionalPin = 13; // pin for secitonal opening touch pad
 const int integralPin = 16; // pin for integral opening touch pad
