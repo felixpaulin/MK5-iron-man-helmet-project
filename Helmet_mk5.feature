@@ -1,3 +1,33 @@
+# ============================================================
+# MK5 Iron Man Helmet Controller
+#
+# File:
+#     MK5Helmet.feature
+#
+# Author:
+#     Felix Paulin
+#
+# Description:
+#     Behaviour specification written using the Gherkin
+#     language.
+#
+#     This file documents the expected behaviour of the
+#     helmet controller using Given / When / Then scenarios.
+#
+# Responsibilities:
+#     - Document existing functionality
+#     - Define expected behaviour
+#     - Act as project documentation
+#     - Assist future testing and development
+#
+# Planned Features:
+#     - TinyML voice interaction
+#     - LED control
+#     - LLM interaction
+#     - Future hardware revisions
+#
+# ============================================================
+
 Feature: Custom ESP32 AutoKing MK5 Helmet Controller
 
   Background:

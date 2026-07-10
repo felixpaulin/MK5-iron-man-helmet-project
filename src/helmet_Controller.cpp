@@ -1,3 +1,48 @@
+/*
+============================================================
+MK5 Iron Man Helmet Controller
+
+File:
+    HelmetController.cpp
+
+Author:
+    Felix Paulin
+
+Description:
+    Main firmware for the custom ESP32 helmet controller.
+
+Responsibilities:
+    - Control all six servos
+    - Execute sectional opening and closing
+    - Execute integral opening and closing
+    - Read touch sensors
+    - Process incoming serial commands
+    - Manage servo timing and synchronization
+    - Prevent servo buzzing through dynamic detach logic
+
+Current Features:
+    ✓ Sectional opening
+    ✓ Sectional closing
+    ✓ Integral opening
+    ✓ Integral closing
+    ✓ Touch sensor control
+    ✓ Serial command interface
+    ✓ Smooth synchronized servo movement
+    ✓ Dynamic servo detach
+
+Planned Features:
+    - ESP32-S3 migration
+    - TinyML voice commands
+    - LED eye control
+    - Ear LED control
+    - Sound effects
+    - Local wake word
+    - Groq-hosted LLM integration
+
+============================================================
+*/
+
+
 #include <ESP32Servo.h>
 #include <Arduino.h>
 
