@@ -10,7 +10,7 @@ REM Move to this script's folder
 cd /d "%~dp0"
 
 REM Load the Visual Studio Build Tools environment
-call "%ProgramFiles(x86)%\Microsoft Visual Studio\2026\BuildTools\Common7\Tools\VsDevCmd.bat"
+call "C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\Common7\Tools\VsDevCmd.bat"
 
 echo.
 echo Compiling...
