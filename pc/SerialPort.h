@@ -1,9 +1,8 @@
 /*
-============================================================
 MK5 Iron Man Helmet Controller
 
 File:
-    SerialPort.h
+   SerialPort.h
 
 Author:
     Felix Paulin
@@ -28,6 +27,7 @@ Future Use:
 ============================================================
 */
 
+#include <windows.h> 
 
 #pragma once              // Prevents this file from being included twice.
 
@@ -72,5 +72,5 @@ private:
     // to represent an open device.
     // We keep it private because nobody outside
     // the class should modify it.
-    void* handle;
+    HANDLE handle;
 };
