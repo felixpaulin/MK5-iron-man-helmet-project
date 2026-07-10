@@ -34,6 +34,15 @@ Future Use:
 ============================================================
 */
 
+#pragma once // Prevents double-inclusion errors
+
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN // Strips out unneeded Windows APIs
+#endif
+
+#include <windows.h>
+#include <string>
+
 class SerialPort
 {
 public:
@@ -44,7 +53,6 @@ public:
     void close();
 
     bool send(const std::string& message);
-
     bool isOpen() const;
 
 private:

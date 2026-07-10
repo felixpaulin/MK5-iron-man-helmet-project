@@ -123,6 +123,7 @@ void moveCheekServosTo(int rightAngle, int leftAngle) {
     rightCheek.write(rightCheekAngle);
     leftCheek.write(leftCheekAngle);
     delay(smoothTurnMs);
+    yield(); // yield to allow other tasks to run
   }
 
   delay(150);
@@ -151,6 +152,7 @@ void moveTopServosTo(int rightAngle, int leftAngle) {
     rightTop.write(rightTopAngle);
     leftTop.write(leftTopAngle);
     delay(6);
+    yield(); // yield to allow other tasks to run
   }
 
   delay(150);
@@ -176,6 +178,7 @@ void moveMiddleTopTo(int angle) {
 
     middleTop.write(middleTopAngle);
     delay(smoothTurnMs);
+    yield(); // yield to allow other tasks to run
   }
   delay(150);
   middleTop.detach();
@@ -224,6 +227,7 @@ void moveCheeksAndMiddleTopTo(int rightAngle, int leftAngle, int middleAngle) {
     leftCheek.write(leftCheekAngle);
     middleTop.write(middleTopAngle);
     delay(4);
+    yield(); // yield to allow other tasks to run
   }
 
   delay(150);
@@ -246,6 +250,7 @@ void moveBottomServoTo(int angle) {
 
     bottomServo.write(bottomServoAngle);
     delay(smoothTurnMs);
+    yield(); // yield to allow other tasks to run
   }
   delay(150);
 }
@@ -313,38 +318,40 @@ void loop() {
   lastIntegralState = integralState;
 
 
-  if (Serial.available()) {
+  // --- FIX: Completely rebuilt, robust Serial Command Interface ---
+  if (Serial.available() > 0) {
     String command = Serial.readStringUntil('\n');
     command.trim();
 
     if (command == "section_helmet") {
-        if (!helmetOpen) {
-            helmetOpen = true;
-            sectionalOpen();
-            Serial.println(command);
-        }
+      if (!helmetOpen) {
+        helmetOpen = true;
+        sectionalOpen();
+      }
+      Serial.println("ACK: section_helmet");
     }
-
     else if (command == "lock_helmet") {
-        if (helmetOpen) {
-            helmetOpen = false;
-            sectionalOpen();
-            Serial.println(command);
-        }
+      if (helmetOpen) {
+        helmetOpen = false;
+        sectionalOpen();
+      }
+      Serial.println("ACK: lock_helmet");
     }
-
     else if (command == "open_helmet") {
-        if (!topOpen) {
-            integralOpen();
-            Serial.println(command);
-        }
+      if (!topOpen) {
+        integralOpen();
+      }
+      Serial.println("ACK: open_helmet");
     }
-
     else if (command == "close_helmet") {
-        if (topOpen) {
-            integralOpen();
-            Serial.println(command);
-        }
+      if (topOpen) {
+        integralOpen();
+      }
+      Serial.println("ACK: close_helmet");
     }
-}
+    else {
+      // Echo back an unknown command to clear the C++ buffer safely
+      Serial.println("ERROR: Unknown command: " + command);
+    }
+  }
 }
