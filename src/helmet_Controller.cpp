@@ -209,6 +209,8 @@ void moveBottomServoTo(int angle) {
 void setup() {
   pinMode(sectionalPin, INPUT_PULLUP);
   pinMode(integralPin, INPUT_PULLUP);
+  Serial.begin(115200);
+  Serial.println("MK5 Controller Ready!");
 }
 
 // function for opening the helmet in sections.
@@ -264,4 +266,43 @@ void loop() {
 
   lastSectionalState = sectionalState;
   lastIntegralState = integralState;
+
+if (Serial.available()) {
+    String cmd = Serial.readStringUntil('\n');
+    cmd.trim();
+
+    Serial.print("Received: ");
+    Serial.println(cmd);
+}
+
+  if (Serial.available()) {
+    String command = Serial.readStringUntil('\n');
+    command.trim();
+
+    if (command == "SECTION_HELMET") {
+        if (!helmetOpen) {
+            helmetOpen = true;
+            sectionalOpen();
+        }
+    }
+
+    else if (command == "LOCK_HELMET") {
+        if (helmetOpen) {
+            helmetOpen = false;
+            sectionalOpen();
+        }
+    }
+
+    else if (command == "OPEN_HELMET") {
+        if (!topOpen) {
+            integralOpen();
+        }
+    }
+
+    else if (command == "CLOSE_HELMET") {
+        if (topOpen) {
+            integralOpen();
+        }
+    }
+}
 }
