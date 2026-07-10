@@ -19,7 +19,6 @@ echo.
 cl /EHsc /std:c++17 ^
 TinyMLListener.cpp ^
 SerialPort.cpp ^
-AudioCapture.cpp ^
 /Fe:TinyMLListener.exe
 
 if %ERRORLEVEL% EQU 0 (
