@@ -312,13 +312,6 @@ void loop() {
   lastSectionalState = sectionalState;
   lastIntegralState = integralState;
 
-if (Serial.available()) {
-    String cmd = Serial.readStringUntil('\n');
-    cmd.trim();
-
-    Serial.print("Received: ");
-    Serial.println(cmd);
-}
 
   if (Serial.available()) {
     String command = Serial.readStringUntil('\n');
@@ -349,5 +342,13 @@ if (Serial.available()) {
             integralOpen();
         }
     }
+}
+
+if (Serial.available()) {
+    String cmd = Serial.readStringUntil('\n');
+    cmd.trim();
+
+    Serial.print("Received: ");
+    Serial.println(cmd);
 }
 }
