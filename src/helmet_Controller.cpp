@@ -317,7 +317,7 @@ void loop() {
     String command = Serial.readStringUntil('\n');
     command.trim();
 
-    if (command == "SECTION_HELMET") {
+    if (command == "section_helmet") {
         if (!helmetOpen) {
             helmetOpen = true;
             sectionalOpen();
@@ -325,7 +325,7 @@ void loop() {
         }
     }
 
-    else if (command == "LOCK_HELMET") {
+    else if (command == "lock_helmet") {
         if (helmetOpen) {
             helmetOpen = false;
             sectionalOpen();
@@ -333,14 +333,14 @@ void loop() {
         }
     }
 
-    else if (command == "OPEN_HELMET") {
+    else if (command == "open_helmet") {
         if (!topOpen) {
             integralOpen();
             Serial.println(command);
         }
     }
 
-    else if (command == "CLOSE_HELMET") {
+    else if (command == "close_helmet") {
         if (topOpen) {
             integralOpen();
             Serial.println(command);

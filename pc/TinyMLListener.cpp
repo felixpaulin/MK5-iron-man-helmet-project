@@ -40,7 +40,6 @@ int main()
     SerialPort helmet("COM5");
 
 
-while (true) {
     if (!helmet.open())
     {
         std::cout << "Failed to connect to helmet.\n";
@@ -51,12 +50,12 @@ while (true) {
 
     std::cout << "Available Commands\n";
     std::cout << "------------------\n";
-    std::cout << "SECTION_HELMET\n";
-    std::cout << "LOCK_HELMET\n";
-    std::cout << "OPEN_HELMET\n";
-    std::cout << "CLOSE_HELMET\n";
-    std::cout << "EXIT\n\n";
-
+    std::cout << "section_helmet\n";
+    std::cout << "lock_helmet\n";
+    std::cout << "open_helmet\n";
+    std::cout << "close_helmet\n";
+    std::cout << "exit\n\n";
+    
     while (true)
     {
         std::string command;
@@ -65,17 +64,21 @@ while (true) {
 
         std::getline(std::cin, command);
 
-        if (command == "EXIT")
+        if (command == "exit")
         {
             break;
         }
 
-        helmet.send(command + "\n");
+    if (helmet.send(command + "\n"))
+    {
+        std::cout << "Sent: " << command << std::endl;
+    }
+    else
+    {
+        std::cout << "Failed to send!" << std::endl;
     }
 
+    }
     helmet.close();
-
     return 0;
-}
-
 }

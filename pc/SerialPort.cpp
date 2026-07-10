@@ -106,13 +106,21 @@ bool SerialPort::send(const std::string& message)
 
     DWORD bytesWritten;
 
-    BOOL success = WriteFile(
-        handle,
-        message.c_str(),
-        (DWORD)message.length(),
-        &bytesWritten,
-        nullptr
+BOOL success = WriteFile(
+    handle,
+    message.c_str(),
+    (DWORD)message.length(),
+    &bytesWritten,
+    nullptr
 );
+
+if (!success)
+{
+    std::cout << "WriteFile failed. Error: "
+              << GetLastError() << std::endl;
+}
+
+return success;
 
 return success && bytesWritten == message.length();
 }
