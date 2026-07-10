@@ -321,6 +321,7 @@ void loop() {
         if (!helmetOpen) {
             helmetOpen = true;
             sectionalOpen();
+            Serial.println(command);
         }
     }
 
@@ -328,27 +329,22 @@ void loop() {
         if (helmetOpen) {
             helmetOpen = false;
             sectionalOpen();
+            Serial.println(command);
         }
     }
 
     else if (command == "OPEN_HELMET") {
         if (!topOpen) {
             integralOpen();
+            Serial.println(command);
         }
     }
 
     else if (command == "CLOSE_HELMET") {
         if (topOpen) {
             integralOpen();
+            Serial.println(command);
         }
     }
-}
-
-if (Serial.available()) {
-    String cmd = Serial.readStringUntil('\n');
-    cmd.trim();
-
-    Serial.print("Received: ");
-    Serial.println(cmd);
 }
 }
