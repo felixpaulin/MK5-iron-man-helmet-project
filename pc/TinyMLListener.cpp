@@ -37,7 +37,7 @@ int main()
     std::cout << " MK5 TinyML Desktop Listener\n";
     std::cout << "=========================================\n\n";
 
-    SerialPort helmet("COM5", 115200);
+    SerialPort helmet("COM5");
 
 
     if (!helmet.open())
