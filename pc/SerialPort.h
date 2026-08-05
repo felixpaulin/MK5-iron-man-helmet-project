@@ -44,6 +44,9 @@ public:
     SerialPort(const std::string& portName);
     ~SerialPort();
 
+    SerialPort(const SerialPort&) = delete;
+    SerialPort& operator=(const SerialPort&) = delete;
+
     bool open();
     void close();
 
