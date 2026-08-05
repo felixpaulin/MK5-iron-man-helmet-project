@@ -61,7 +61,6 @@ int main()
         std::string command;
 
         std::cout << "> ";
-
         std::getline(std::cin, command);
 
         if (command.empty())
@@ -86,7 +85,7 @@ int main()
         std::cout << "Failed to send!" << std::endl;
     }
 
-    std::cout << "Done!, command sent successfully!" << std::endl;
+    std::cout << "Done" << std::endl;
 
     }
     helmet.close();
