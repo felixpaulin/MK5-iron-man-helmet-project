@@ -62,6 +62,9 @@ bool SerialPort::open()
         return false;
     }
 
+    // Allocate Windows serial buffers
+    SetupComm(handle, 4096, 4096);
+
     // 1. Properly pull existing device configuration parameters first
     DCB serialParams = { 0 };
     serialParams.DCBlength = sizeof(serialParams);
@@ -85,6 +88,15 @@ bool SerialPort::open()
         close();
         return false;
     }
+    
+    // Clear old serial data
+    PurgeComm(
+        handle,
+        PURGE_RXCLEAR |
+        PURGE_TXCLEAR |
+        PURGE_RXABORT |
+        PURGE_TXABORT
+);
 
     // 3. Apply standard, non-blocking time policies to prevent packet hanging
     COMMTIMEOUTS timeouts = { 0 };
@@ -119,6 +131,12 @@ bool SerialPort::send(const std::string& message)
     if (!isOpen())
         return false;
 
+    // Reset communication errors
+    DWORD errors;
+    COMSTAT status;
+
+    ClearCommError(handle, &errors, &status);
+
     DWORD bytesWritten = 0;
 
     BOOL success = WriteFile(
@@ -131,12 +149,14 @@ bool SerialPort::send(const std::string& message)
 
     if (!success)
     {
-        std::cout << "WriteFile failed. Error: " << GetLastError() << std::endl;
+        DWORD error = GetLastError();
+
+        std::cout << "WriteFile failed!" << std::endl;
+        std::cout << "Windows Error Code: "
+            << error
+            << std::endl;
         return false;
     }
-
-    // Flush makes sure everything is physically gone down the wire
-    FlushFileBuffers(handle);
 
     return (bytesWritten == message.length());
 }
