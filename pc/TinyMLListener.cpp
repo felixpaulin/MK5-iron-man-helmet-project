@@ -64,10 +64,18 @@ int main()
 
         std::getline(std::cin, command);
 
+        if (command.empty())
+        {
+            continue;
+        }
+
         if (command == "exit")
         {
+            std::cout << "Closing connection..." << std::endl;
             break;
         }
+
+    std::cout << "Sending..." << std::endl;
 
     if (helmet.send(command + "\n"))
     {
@@ -78,7 +86,10 @@ int main()
         std::cout << "Failed to send!" << std::endl;
     }
 
+    std::cout << "Done!, command sent successfully!" << std::endl;
+
     }
     helmet.close();
+    std::cout << "Disconnected." << std::endl;
     return 0;
 }
