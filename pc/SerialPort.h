@@ -52,5 +52,5 @@ public:
 
 private:
     std::string portName;
-    HANDLE handle;
+    HANDLE handle = nullptr;
 };

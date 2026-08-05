@@ -48,7 +48,7 @@ bool SerialPort::open()
     handle = CreateFileA(
         portName.c_str(),
         GENERIC_READ | GENERIC_WRITE,
-        0, // Exclusive access
+        0,                  // Exclusive access
         nullptr,
         OPEN_EXISTING,
         FILE_ATTRIBUTE_NORMAL,
@@ -63,12 +63,16 @@ bool SerialPort::open()
     }
 
     // Allocate Windows serial buffers
-    SetupComm(handle, 4096, 4096);
+    if (!SetupComm(handle, 4096, 4096))
+    {
+        std::cout << "Warning: Failed to allocate serial buffers."
+                  << std::endl;
+    }
 
-    // 1. Properly pull existing device configuration parameters first
-    DCB serialParams = { 0 };
+    // Read current COM settings
+    DCB serialParams = {};
     serialParams.DCBlength = sizeof(serialParams);
-    
+
     if (!GetCommState(handle, &serialParams))
     {
         std::cout << "Failed to read COM settings." << std::endl;
@@ -76,11 +80,11 @@ bool SerialPort::open()
         return false;
     }
 
-    // 2. Apply your specific hardware overrides cleanly
-    serialParams.BaudRate = CBR_115200; // Assumes 115200 in ESP code
+    // Configure serial settings
+    serialParams.BaudRate = CBR_115200;
     serialParams.ByteSize = 8;
     serialParams.StopBits = ONESTOPBIT;
-    serialParams.Parity = NOPARITY;
+    serialParams.Parity   = NOPARITY;
 
     if (!SetCommState(handle, &serialParams))
     {
@@ -88,32 +92,38 @@ bool SerialPort::open()
         close();
         return false;
     }
-    
-    // Clear old serial data
-    PurgeComm(
-        handle,
-        PURGE_RXCLEAR |
-        PURGE_TXCLEAR |
-        PURGE_RXABORT |
-        PURGE_TXABORT
-);
 
-    // 3. Apply standard, non-blocking time policies to prevent packet hanging
-    COMMTIMEOUTS timeouts = { 0 };
+    // Clear old data from previous sessions
+    if (!PurgeComm(
+            handle,
+            PURGE_RXCLEAR |
+            PURGE_TXCLEAR |
+            PURGE_RXABORT |
+            PURGE_TXABORT))
+    {
+        std::cout << "Warning: Failed to purge serial buffers."
+                  << std::endl;
+    }
+
+    // Configure timeouts
+    COMMTIMEOUTS timeouts = {};
+
     timeouts.ReadIntervalTimeout         = 50;
     timeouts.ReadTotalTimeoutConstant    = 50;
     timeouts.ReadTotalTimeoutMultiplier  = 10;
-    timeouts.WriteTotalTimeoutConstant   = 50; 
+    timeouts.WriteTotalTimeoutConstant   = 50;
     timeouts.WriteTotalTimeoutMultiplier = 10;
 
     if (!SetCommTimeouts(handle, &timeouts))
     {
-        std::cout << "Failed to set serial timeouts." << std::endl;
+        std::cout << "Failed to configure COM timeouts."
+                  << std::endl;
         close();
         return false;
     }
 
     std::cout << "Connected to " << portName << std::endl;
+
     return true;
 }
 
@@ -129,13 +139,20 @@ void SerialPort::close()
 bool SerialPort::send(const std::string& message)
 {
     if (!isOpen())
+    {
+        std::cout << "Serial port is not open." << std::endl;
         return false;
+    }
 
-    // Reset communication errors
-    DWORD errors;
-    COMSTAT status;
+    // Clear any previous communication errors
+    DWORD errors = 0;
+    COMSTAT status = {};
 
-    ClearCommError(handle, &errors, &status);
+    if (!ClearCommError(handle, &errors, &status))
+    {
+        std::cout << "Warning: ClearCommError failed."
+                  << std::endl;
+    }
 
     DWORD bytesWritten = 0;
 
@@ -153,12 +170,25 @@ bool SerialPort::send(const std::string& message)
 
         std::cout << "WriteFile failed!" << std::endl;
         std::cout << "Windows Error Code: "
-            << error
-            << std::endl;
+                  << error
+                  << std::endl;
+
         return false;
     }
 
-    return (bytesWritten == message.length());
+    if (bytesWritten != message.length())
+    {
+        std::cout << "Warning: Only "
+                  << bytesWritten
+                  << " of "
+                  << message.length()
+                  << " bytes were written."
+                  << std::endl;
+
+        return false;
+    }
+
+    return true;
 }
 
 bool SerialPort::isOpen() const
