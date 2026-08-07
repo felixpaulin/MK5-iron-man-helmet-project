@@ -150,9 +150,19 @@ bool SerialPort::send(const std::string& message)
 
     if (!ClearCommError(handle, &errors, &status))
     {
-        std::cout << "Warning: ClearCommError failed."
-                  << std::endl;
+        DWORD lastError = GetLastError();
+
+        std::cout << "==========================" << std::endl;
+        std::cout << "ClearCommError FAILED!" << std::endl;
+        std::cout << "Windows Error Code: " << lastError << std::endl;
+        std::cout << "==========================" << std::endl;
+
+        return false;
     }
+
+    std::cout << "Errors: " << errors << std::endl;
+    std::cout << "RX Queue: " << status.cbInQue << std::endl;
+    std::cout << "TX Queue: " << status.cbOutQue << std::endl;
 
     DWORD bytesWritten = 0;
 
