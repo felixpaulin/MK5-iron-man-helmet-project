@@ -48,13 +48,13 @@ int main()
 
     std::cout << "\nConnected successfully!\n\n";
 
-    std::cout << "Available Commands\n";
-    std::cout << "------------------\n";
-    std::cout << "section_helmet\n";
-    std::cout << "lock_helmet\n";
-    std::cout << "open_helmet\n";
-    std::cout << "close_helmet\n";
-    std::cout << "exit\n\n";
+    std::cout << "======== MK5 Helmet Commands (use numbers) ========\n\n";
+
+    std::cout << "[1] Section Helmet\n";
+    std::cout << "[2] Lock Helmet\n";
+    std::cout << "[3] Open Helmet\n";
+    std::cout << "[4] Close Helmet\n";
+    std::cout << "[5] Exit\n\n";
     
     while (true)
     {
@@ -68,25 +68,50 @@ int main()
             continue;
         }
 
-        if (command == "exit")
-        {
-            std::cout << "Closing connection..." << std::endl;
-            break;
-        }
+if (command == "5")
+{
+    std::cout << "Closing connection..." << std::endl;
+    break;
+}
 
-    std::cout << "Sending..." << std::endl;
+// Convert menu choice into helmet command
+std::string serialCommand;
 
-    if (helmet.send(command + "\n"))
-    {
-        std::cout << "Sent: " << command << std::endl;
-    }
-    else
-    {
-        std::cout << "Failed to send!" << std::endl;
-    }
+switch (command[0])
+{
+case '1':
+    serialCommand = "section_helmet";
+    break;
 
-    std::cout << "Done" << std::endl;
+case '2':
+    serialCommand = "lock_helmet";
+    break;
 
+case '3':
+    serialCommand = "open_helmet";
+    break;
+
+case '4':
+    serialCommand = "close_helmet";
+    break;
+
+default:
+    std::cout << "Invalid option!" << std::endl;
+    continue;
+}
+
+std::cout << "Sending..." << std::endl;
+
+if (helmet.send(serialCommand + "\n"))
+{
+    std::cout << "Sent: " << serialCommand << std::endl;
+}
+else
+{
+    std::cout << "Failed to send!" << std::endl;
+}
+
+std::cout << "Done" << std::endl;
     }
     helmet.close();
     std::cout << "Disconnected." << std::endl;
