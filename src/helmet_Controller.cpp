@@ -260,7 +260,6 @@ void setup() {
   pinMode(sectionalPin, INPUT_PULLUP);
   pinMode(integralPin, INPUT_PULLUP);
   Serial.begin(115200);
-  Serial.println("MK5 Controller Ready!");
 }
 
 // function for opening the helmet in sections.
@@ -328,30 +327,29 @@ void loop() {
         helmetOpen = true;
         sectionalOpen();
       }
-      Serial.println("ACK: section_helmet");
+      //Serial.println("ACK: section_helmet");
     }
     else if (command == "lock_helmet") {
       if (helmetOpen) {
         helmetOpen = false;
         sectionalOpen();
       }
-      Serial.println("ACK: lock_helmet");
+      //Serial.println("ACK: lock_helmet");
     }
     else if (command == "open_helmet") {
       if (!topOpen) {
         integralOpen();
       }
-      Serial.println("ACK: open_helmet");
+      //Serial.println("ACK: open_helmet");
     }
     else if (command == "close_helmet") {
       if (topOpen) {
         integralOpen();
       }
-      Serial.println("ACK: close_helmet");
+      //Serial.println("ACK: close_helmet");
     }
     else {
-      // Echo back an unknown command to clear the C++ buffer safely
-      Serial.println("ERROR: Unknown command: " + command);
+      //Serial.println("ERR: Unknown command");
     }
   }
 }
