@@ -273,11 +273,11 @@ void sectionalOpen() {
     delay(topDelayMs);
     moveTopServosTo(rightTopOpen, leftTopOpen);
   } else {
-    moveTopServosTo(rightTopClosed, leftTopClosed);
-    delay(topDelayMs);
     moveBottomServoTo(bottomServoClosed);
     bottomServo.detach();
     delay(bottomDelayMs);
+    moveTopServosTo(rightTopClosed, leftTopClosed);
+    delay(topDelayMs);
     moveCheeksAndMiddleTopTo(rightCheekClosed, leftCheekClosed, middleTopClosed);
   }
 }
