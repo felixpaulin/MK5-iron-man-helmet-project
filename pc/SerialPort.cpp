@@ -192,9 +192,10 @@ bool SerialPort::send(const std::string& message)
     std::cout << "==========================" << std::endl;
 
     if (!clearResult)
-    {
-        return false;
-    }
+        {
+            std::cout << "WARNING: ClearCommError failed, attempting WriteFile anyway."
+                << std::endl;
+        }
 
     DWORD bytesWritten = 0;
 
