@@ -151,7 +151,7 @@ void moveTopServosTo(int rightAngle, int leftAngle) {
 
     rightTop.write(rightTopAngle);
     leftTop.write(leftTopAngle);
-    delay(6);
+    delay(5);
     yield(); // yield to allow other tasks to run
   }
 
@@ -273,11 +273,11 @@ void sectionalOpen() {
     delay(topDelayMs);
     moveTopServosTo(rightTopOpen, leftTopOpen);
   } else {
+    moveTopServosTo(rightTopClosed, leftTopClosed);
+    delay(topDelayMs);
     moveBottomServoTo(bottomServoClosed);
     bottomServo.detach();
     delay(bottomDelayMs);
-    moveTopServosTo(rightTopClosed, leftTopClosed);
-    delay(topDelayMs);
     moveCheeksAndMiddleTopTo(rightCheekClosed, leftCheekClosed, middleTopClosed);
   }
 }

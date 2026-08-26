@@ -55,12 +55,33 @@ bool SerialPort::open()
         nullptr
     );
 
-    if (handle == INVALID_HANDLE_VALUE)
+if (handle == INVALID_HANDLE_VALUE)
+{
+    DWORD error = GetLastError();
+
+    std::cout << "==========================" << std::endl;
+    std::cout << "FAILED TO OPEN SERIAL PORT" << std::endl;
+    std::cout << "Port: " << portName << std::endl;
+    std::cout << "Windows Error Code: " << error << std::endl;
+
+    if (error == ERROR_ACCESS_DENIED)
     {
-        std::cout << "Failed to open " << portName << std::endl;
-        handle = nullptr;
-        return false;
+        std::cout << "Meaning: ACCESS DENIED (Error 5)" << std::endl;
     }
+    else if (error == ERROR_FILE_NOT_FOUND)
+    {
+        std::cout << "Meaning: PORT NOT FOUND (Error 2)" << std::endl;
+    }
+    else
+    {
+        std::cout << "Meaning: Unknown Windows error" << std::endl;
+    }
+
+    std::cout << "==========================" << std::endl;
+
+    handle = nullptr;
+    return false;
+}
 
     // Allocate Windows serial buffers
     if (!SetupComm(handle, 4096, 4096))
@@ -144,25 +165,36 @@ bool SerialPort::send(const std::string& message)
         return false;
     }
 
-    // Clear any previous communication errors
+    // Check the current communication state
     DWORD errors = 0;
     COMSTAT status = {};
 
-    if (!ClearCommError(handle, &errors, &status))
+    BOOL clearResult = ClearCommError(handle, &errors, &status);
+    DWORD clearError = clearResult ? ERROR_SUCCESS : GetLastError();
+
+    std::cout << "\n==========================" << std::endl;
+    std::cout << "SERIAL DEBUG" << std::endl;
+    std::cout << "ClearCommError result: "
+              << (clearResult ? "SUCCESS" : "FAILED")
+              << std::endl;
+    std::cout << "ClearCommError Windows error: "
+              << clearError
+              << std::endl;
+    std::cout << "Communication errors: "
+              << errors
+              << std::endl;
+    std::cout << "RX Queue: "
+              << status.cbInQue
+              << std::endl;
+    std::cout << "TX Queue: "
+              << status.cbOutQue
+              << std::endl;
+    std::cout << "==========================" << std::endl;
+
+    if (!clearResult)
     {
-        DWORD lastError = GetLastError();
-
-        std::cout << "==========================" << std::endl;
-        std::cout << "ClearCommError FAILED!" << std::endl;
-        std::cout << "Windows Error Code: " << lastError << std::endl;
-        std::cout << "==========================" << std::endl;
-
         return false;
     }
-
-    std::cout << "Errors: " << errors << std::endl;
-    std::cout << "RX Queue: " << status.cbInQue << std::endl;
-    std::cout << "TX Queue: " << status.cbOutQue << std::endl;
 
     DWORD bytesWritten = 0;
 
@@ -178,13 +210,20 @@ bool SerialPort::send(const std::string& message)
     {
         DWORD error = GetLastError();
 
-        std::cout << "WriteFile failed!" << std::endl;
+        std::cout << "==========================" << std::endl;
+        std::cout << "WriteFile FAILED!" << std::endl;
         std::cout << "Windows Error Code: "
                   << error
                   << std::endl;
+        std::cout << "==========================" << std::endl;
 
         return false;
     }
+
+    std::cout << "WriteFile succeeded: "
+              << bytesWritten
+              << " bytes written."
+              << std::endl;
 
     if (bytesWritten != message.length())
     {
