@@ -48,7 +48,7 @@ bool SerialPort::open()
     handle = CreateFileA(
         portName.c_str(),
         GENERIC_READ | GENERIC_WRITE,
-        0,                  // Exclusive access
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
         nullptr,
         OPEN_EXISTING,
         FILE_ATTRIBUTE_NORMAL,
