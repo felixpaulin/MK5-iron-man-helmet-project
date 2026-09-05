@@ -101,6 +101,9 @@ if (handle == INVALID_HANDLE_VALUE)
         return false;
     }
 
+    EscapeCommFunction(handle, CLRDTR);
+    EscapeCommFunction(handle, CLRRTS);
+
     // Configure serial settings
     serialParams.BaudRate = CBR_115200;
     serialParams.ByteSize = 8;
