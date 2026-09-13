@@ -261,9 +261,6 @@ void setup() {
   pinMode(integralPin, INPUT_PULLUP);
   Serial.begin(115200);
   delay(1000); // wait for serial to initialize
-  Serial.println("================================");
-  Serial.println("IRON MAN HELMET S3 BOOTED");
-  Serial.println("================================");
 }
 
 // function for opening the helmet in sections.
