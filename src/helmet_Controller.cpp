@@ -53,7 +53,7 @@ const int integralPin = 16; // pin for integral opening touch pad
 
 // pins for all the servos. rightTop and leftTop are the two top piece servos
 // bottomServo is the servo for the bottom part and same situation with middleTop and cheek servos
-const int rightCheekPin = 3;
+const int rightCheekPin = 8;
 const int leftCheekPin = 18;
 const int middleTopPin = 14;
 const int bottomServoPin = 9;
