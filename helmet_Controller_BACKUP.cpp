@@ -53,12 +53,12 @@ const int integralPin = 16; // pin for integral opening touch pad
 
 // pins for all the servos. rightTop and leftTop are the two top piece servos
 // bottomServo is the servo for the bottom part and same situation with middleTop and cheek servos
-const int rightCheekPin = 18;
-const int leftCheekPin = 19;
+const int rightCheekPin = 3;
+const int leftCheekPin = 18;
 const int middleTopPin = 14;
-const int bottomServoPin = 46;
-const int leftTopPin = 17;
-const int rightTopPin = 45;
+const int bottomServoPin = 9;
+const int leftTopPin = 10;
+const int rightTopPin = 17;
 
 // servo names
 Servo rightCheek;
@@ -89,9 +89,9 @@ const int middleTopClosed = 150;
 const int middleTopOpen = 30;
 const int bottomServoClosed = 38;
 const int bottomServoOpen = 130;
-const int leftTopClosed = 20;
+const int leftTopClosed = 18;
 const int leftTopOpen = 180;
-const int rightTopClosed = 20;
+const int rightTopClosed = 18;
 const int rightTopOpen = 180;
 
 // define angle names for in code
@@ -261,9 +261,6 @@ void setup() {
   pinMode(integralPin, INPUT_PULLUP);
   Serial.begin(115200);
   delay(1000); // wait for serial to initialize
-  Serial.println("================================");
-  Serial.println("IRON MAN HELMET S3 BOOTED");
-  Serial.println("================================");
 }
 
 // function for opening the helmet in sections.
@@ -272,7 +269,8 @@ void sectionalOpen() {
   if (helmetOpen) {
     moveCheekServosTo(rightCheekOpen, leftCheekOpen);
     delay(middleTopDelayMs);
-    moveMiddleTopTo(middleTopOpen);    delay(bottomDelayMs);
+    moveMiddleTopTo(middleTopOpen);    
+    delay(bottomDelayMs);
     moveBottomServoTo(bottomServoOpen);
     delay(topDelayMs);
     moveTopServosTo(rightTopOpen, leftTopOpen);
