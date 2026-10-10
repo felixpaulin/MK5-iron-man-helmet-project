@@ -75,7 +75,7 @@ bool lastSectionalState = HIGH;
 bool lastIntegralState = HIGH;
 
 // smooth turn for servo speed and delay for time inbtween different servos moving
-const int smoothTurnMs = 2;
+const int smoothTurnMs = 10;
 const int middleTopDelayMs = 100;
 const int bottomDelayMs = 150;
 const int topDelayMs = 150;
@@ -151,7 +151,7 @@ void moveTopServosTo(int rightAngle, int leftAngle) {
 
     rightTop.write(rightTopAngle);
     leftTop.write(leftTopAngle);
-    delay(5);
+    delay(smoothTurnMs);
     yield(); // yield to allow other tasks to run
   }
 
@@ -226,7 +226,7 @@ void moveCheeksAndMiddleTopTo(int rightAngle, int leftAngle, int middleAngle) {
     rightCheek.write(rightCheekAngle);
     leftCheek.write(leftCheekAngle);
     middleTop.write(middleTopAngle);
-    delay(4);
+    delay(smoothTurnMs);
     yield(); // yield to allow other tasks to run
   }
 
@@ -255,7 +255,7 @@ void moveBottomServoTo(int angle) {
   delay(150);
 }
 
-// setup for the touch pads
+// setup
 void setup() {
   pinMode(sectionalPin, INPUT_PULLUP);
   pinMode(integralPin, INPUT_PULLUP);
@@ -271,13 +271,29 @@ void setup() {
 // It moves the cheek servos and the middle top servo in sync, while keeping those motions in separate helper functions.
 void sectionalOpen() {
   if (helmetOpen) {
+if (helmetOpen) {
+    Serial.println("STAGE 1: Cheeks opening");
     moveCheekServosTo(rightCheekOpen, leftCheekOpen);
+    Serial.println("STAGE 1 COMPLETE");
+
     delay(middleTopDelayMs);
-    moveMiddleTopTo(middleTopOpen);    
+
+    Serial.println("STAGE 2: Middle-top opening");
+    moveMiddleTopTo(middleTopOpen);
+    Serial.println("STAGE 2 COMPLETE");
+
     delay(bottomDelayMs);
+
+    Serial.println("STAGE 3: Bottom opening");
     moveBottomServoTo(bottomServoOpen);
+    Serial.println("STAGE 3 COMPLETE");
+
     delay(topDelayMs);
+
+    Serial.println("STAGE 4: Top assembly opening");
     moveTopServosTo(rightTopOpen, leftTopOpen);
+    Serial.println("STAGE 4 COMPLETE");
+}
   } else {
     moveTopServosTo(rightTopClosed, leftTopClosed);
     delay(topDelayMs);
